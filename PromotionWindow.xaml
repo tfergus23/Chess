@@ -1,0 +1,28 @@
+﻿<Window x:Class="Chess.PromotionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Chess"
+        mc:Ignorable="d"
+        Title="PromotionWindow" Height="200" Width="300">
+    <StackPanel x:Name="MainStack" HorizontalAlignment="Center">
+        <Label HorizontalAlignment="Center" FontSize="20"  Content="Choose the piece you want:"/>
+        <Grid x:Name="PieceGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="60"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Label HorizontalAlignment="Center" Content="Rook" Grid.Row="1" Grid.Column="0"/>
+            <Label HorizontalAlignment="Center" Content="Bishop" Grid.Row="1" Grid.Column="1"/>
+            <Label HorizontalAlignment="Center" Content="Queen" Grid.Row="1" Grid.Column="2"/>
+            <Label HorizontalAlignment="Center" Content="Knight" Grid.Row="1" Grid.Column="3"/>
+        </Grid>
+    </StackPanel>
+</Window>
