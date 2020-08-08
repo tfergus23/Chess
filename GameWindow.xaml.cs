@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Chess.Board;
 using Chess.Pieces;
 
@@ -34,6 +27,7 @@ namespace Chess
             mainWindow = mw;
         }
 
+        //Displays the valid moves for the selected piece, assuming the piece can currently move.
         private void PieceSelected(object sender, MouseButtonEventArgs e)
         {
             try
@@ -79,11 +73,12 @@ namespace Chess
             }
             catch (Exception error)
             {
-                String errorString = "Oopsie woopsie! Tom made a fucky wucky!\nPlease don't do anything else and send a screenshot\nof the board as well as the following error message:\n";
+                String errorString = "Oopsie woopsie! Tom made a mistake!\nPlease don't do anything else and send a screenshot\nof the board as well as the following error message:\n";
                 ErrorLabel.Content = errorString + error.Message + error.StackTrace;
             }
         }
 
+        //Moves the piece to the selected destination
         private void DestinationSelected(object sender, MouseButtonEventArgs e)
         {
             try
@@ -98,7 +93,7 @@ namespace Chess
             }
             catch (Exception error)
             {
-                String errorString = "Oopsie woopsie! Tom made a fucky wucky!\nPlease don't do anything else and send a screenshot\nof the board as well as the following error message:\n";
+                String errorString = "Oopsie woopsie! Tom made a mistake!\nPlease don't do anything else and send a screenshot\nof the board as well as the following error message:\n";
                 ErrorLabel.Content = errorString + error.Message + error.StackTrace;
             }
             

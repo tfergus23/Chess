@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Chess.Pieces;
 
 namespace Chess.Board
 {
+    //Object meant to represent an entire gamestate.
     class GameBoard
     {
         Piece[,] board;
@@ -50,23 +48,8 @@ namespace Chess.Board
                 { new Rook(7, 0, Player.Player1), new Pawn(7, 1, Player.Player1), null, null, null, null, new Pawn(7, 6, Player.Player2), new Rook(7, 7, Player.Player2) }
 
             };
-            
-            /*
-            {
-                //Set the entire board with pieces (Promotion Test Board)
-                { null, null, null, null, null, null, new Pawn(0, 6, Player.Player1), null },
-                { null, null, null, null, null, null, null, null },
-                { null, null, null, null, null, null, null, null },
-                { null, null, null, null, null, null, null, null },
-                { player1King, null, null, null, null, null, null, player2King },
-                { null, null, null, null, null, null, null, null },
-                { null, null, null, null, null, null, null, null },
-                { null, new Pawn(7,1,Player.Player2), null, null, null, null, null, null }
-
-            };
-            */
         }
-
+        //Moves a piece from one space to another
         public void movePiece(int currX, int currY, int destX, int destY)
         {
             if (gameOver) return;
@@ -152,7 +135,7 @@ namespace Chess.Board
             enPassant = null;
             promotionTarget = null;
 
-            //TODO: Castling special case
+            //Castling special case
             if (current.getPieceType() == PieceType.King)
             {
                 //right
@@ -201,7 +184,7 @@ namespace Chess.Board
 
             endOfTurn();
         }
-
+        //Function that checks everything that
         public void endOfTurn()
         {
             //Player 1 Check
@@ -212,9 +195,9 @@ namespace Chess.Board
             if (!player2King.amISafe(this)) player2Check = true;
             else player2Check = false;
 
-            if (!this.testing)
+            //Checkmate
+            if (!this.testing) //movePieceTest shouldn't check for checkmate
             {
-                //Checkmate
                 if (this.player1CheckMate())
                 {
                     endGame(Player.Player2);
@@ -237,7 +220,7 @@ namespace Chess.Board
         {
             Piece current = this.getSpace(currX, currY);
             
-
+            //Clone the board as well as the attributes of the moving piece
             GameBoard oldBoard = this.getClone();
             int oldX = current.x;
             int oldY = current.y;
@@ -246,21 +229,22 @@ namespace Chess.Board
             LinkedList<Rook> rooks = this.getRooks();
             LinkedList<RookCoord> rookCoords = new LinkedList<RookCoord>();
 
+            //Because castling can move the rooks as well, keep a reference to all the rooks as well as their attributes before the move to later undo the move.
             foreach(Rook rook in rooks)
             {
                 rookCoords.AddLast(new RookCoord(rook, new Coordinate(rook.x, rook.y), rook.firstTurn));
             }
 
-            //--------------//
-            this.testing = true;
+            this.testing = true; //Set testing to true so movePiece doesn't check for checkmate and end the game.
             this.movePiece(currX, currY, destX, destY);
             this.testing = false;
 
-            //-------------//
+            //Check if the player's king is safe, undo the move, then return true or false.
             if (current.getPlayer() == Player.Player1)
             {
                 if (player1Check)
                 {
+                    /*----- Undoing the Move -----*/
                     this.setClone(oldBoard);
                     current.x = oldX;
                     current.y = oldY;
@@ -272,6 +256,7 @@ namespace Chess.Board
                         rc.rook.y = rc.coord.y;
                         rc.rook.firstTurn = rc.firstTurn;
                     }
+                    /*---------------------------*/
 
                     return false;
                 }
@@ -280,6 +265,7 @@ namespace Chess.Board
             {
                 if (player2Check)
                 {
+                    /*----- Undoing the Move -----*/
                     this.setClone(oldBoard);
                     current.x = oldX;
                     current.y = oldY;
@@ -291,11 +277,13 @@ namespace Chess.Board
                         rc.rook.y = rc.coord.y;
                         rc.rook.firstTurn = rc.firstTurn;
                     }
+                    /*---------------------------*/
 
                     return false;
 
                 }
             }
+            /*----- Undoing the Move -----*/
             this.setClone(oldBoard);
             current.x = oldX;
             current.y = oldY;
@@ -307,6 +295,7 @@ namespace Chess.Board
                 rc.rook.y = rc.coord.y;
                 rc.rook.firstTurn = rc.firstTurn;
             }
+            /*---------------------------*/
 
             return true;
         }
@@ -354,19 +343,6 @@ namespace Chess.Board
             return result;
         }
 
-        public King getPlayer1King()
-        {
-            return player1King;
-            /*
-            LinkedList<Piece> pieces = this.getPlayer1Pieces();
-            foreach (Piece piece in pieces)
-            {
-                if (piece.getPieceType() == PieceType.King)
-                    return (King)piece;
-            }
-            return null;
-            */
-        }
 
         public LinkedList<Rook> getRooks()
         {
@@ -380,30 +356,6 @@ namespace Chess.Board
                 }
             }
             return result;
-        }
-
-        public King getPlayer2King()
-        {
-            return player2King;
-            /*
-            LinkedList<Piece> pieces = this.getPlayer2Pieces();
-            foreach (Piece piece in pieces)
-            {
-                if (piece.getPieceType() == PieceType.King)
-                    return (King)piece;
-            }
-            return null;
-            */
-        }
-
-        public Boolean isKing1Safe()
-        {
-            return this.getPlayer1King().amISafe(this);
-        }
-
-        public Boolean isKing2Safe()
-        {
-            return this.getPlayer2King().amISafe(this);
         }
 
         public Boolean player1CheckMate()
@@ -455,11 +407,6 @@ namespace Chess.Board
         public Boolean isOccupied(int x, int y)
         {
             return board[x, y] != null;
-        }
-
-        public LinkedList<Coordinate> getValidMoves(int x, int y)
-        {
-            return board[x, y].getValidMoves(this);
         }
 
         private GameBoard getClone()
