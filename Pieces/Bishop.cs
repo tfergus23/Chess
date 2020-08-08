@@ -149,4 +149,4 @@ namespace Chess.Pieces
             }
         }
     }
-}
+} //Commit test
